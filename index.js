@@ -1,7 +1,26 @@
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
 
+morgan.token('data', (req) => {
+  return req.data
+})
+
+function assignData(req, res, next) {
+  req.data = JSON.stringify(req.body)
+  next()
+}
+
 app.use(express.json())
+app.use(assignData)
+app.use([
+  morgan('tiny', {
+    skip: (req, _res) => {return req.method === 'POST'}
+  }),
+  morgan(':method :url :status :res[content-length] - :response-time ms :data', {
+    skip: (req, _res) => {return req.method !== 'POST'}
+  })
+])
 
 let persons = [
   {
@@ -48,7 +67,6 @@ app.delete('/api/persons/:id', (req, res) => {
 })
 
 app.post('/api/persons', (req, res) => {
-  const randomId = Math.floor(Math.random() * 10000)
   console.log(req.body)
   const person = req.body
 
@@ -62,6 +80,7 @@ app.post('/api/persons', (req, res) => {
     })
   }
 
+  const randomId = Math.floor(Math.random() * 10000)
   person.id = randomId
   persons = persons.concat(person)
   res.json(person)
