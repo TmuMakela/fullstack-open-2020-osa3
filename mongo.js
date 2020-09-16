@@ -6,7 +6,7 @@ if (process.argv.length !== 3 && process.argv.length !== 5) {
 }
 
 const password = process.argv[2]
-const dbname = "person-app"
+const dbname = 'person-app'
 
 const url =`mongodb+srv://fullstack:${password}@fullstack-open-2020.0qlol.mongodb.net/${dbname}?retryWrites=true&w=majority`
 
@@ -23,12 +23,12 @@ const Person = mongoose.model('Person', personSchema)
 if (process.argv.length === 3) {
   Person.find({})
     .then(persons => {
-      console.log("phonebook:")
+      console.log('phonebook:')
       persons.forEach(p => console.log(`${p.name} ${p.number}`))
       mongoose.connection.close()
     })
-    .catch(error => console.log("error:", error.message))
-} 
+    .catch(error => console.log('error:', error.message))
+}
 // Add person to phonebook database
 else if (process.argv.length === 5) {
   const name = process.argv[3]
@@ -38,11 +38,11 @@ else if (process.argv.length === 5) {
     name: name,
     number: number,
   })
-  
+
   person.save()
-    .then(result => {
+    .then(_result => {
       console.log(`${name} with number ${number} added to phonebook.`)
       mongoose.connection.close()
     })
-    .catch(error => console.log("error:", error.message))
+    .catch(error => console.log('error:', error.message))
 }

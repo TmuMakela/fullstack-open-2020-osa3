@@ -20,10 +20,10 @@ app.use(express.json())
 app.use(assignData)
 app.use([
   morgan('tiny', {
-    skip: (req, res) => { return req.method === 'POST' }
+    skip: (req, _res) => { return req.method === 'POST' }
   }),
   morgan(':method :url :status :res[content-length] - :response-time ms :data', {
-    skip: (req, res) => { return req.method !== 'POST' }
+    skip: (req, _res) => { return req.method !== 'POST' }
   })
 ])
 
@@ -40,8 +40,8 @@ app.get('/api/persons/:id', (req, res, next) => {
 })
 
 app.delete('/api/persons/:id', (req, res, next) => {
-  Person.deleteOne({"_id": req.params.id})
-    .then(err => res.status(204).end())
+  Person.deleteOne({ '_id': req.params.id })
+    .then(() => res.status(204).end())
     .catch(error => next(error))
 })
 
@@ -72,7 +72,7 @@ app.put('/api/persons/:id', (req, res, next) => {
     number: body.number,
   })
 
-  const query = { "_id": req.params.id }
+  const query = { '_id': req.params.id }
   const update = { number: person.number }
   const options = { new: true }
   Person.findOneAndUpdate(query, update, options)
